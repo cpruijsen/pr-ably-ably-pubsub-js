@@ -90,7 +90,7 @@ class BaseClient {
       normalOptions.keySecret = keyMatch[2];
     }
 
-    if ('clientId' in normalOptions) {
+    if (normalOptions.clientId !== undefined) {
       if (!(typeof normalOptions.clientId === 'string' || normalOptions.clientId === null)) {
         throw new ErrorInfo({
           message: 'clientId must be either a string or null',

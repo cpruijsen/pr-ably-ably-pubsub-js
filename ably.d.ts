@@ -723,8 +723,10 @@ export interface AuthOptions {
 
   /**
    * A client ID, used for identifying this client when publishing messages or for presence purposes. The `clientId` can be any non-empty string, except it cannot contain a `*`. This option is primarily intended to be used in situations where the library is instantiated with a key. Note that a `clientId` may also be implicit in a token used to instantiate the library. An error will be raised if a `clientId` specified here conflicts with the `clientId` implicit in the token. Find out more about [client identities](https://ably.com/documentation/how-ably-works#client-identity).
+   *
+   * Pass `null` (or omit the option) for an anonymous client.
    */
-  clientId?: string;
+  clientId?: string | null;
 }
 
 /**
@@ -766,8 +768,10 @@ export interface TokenParams {
   capability?: { [key: string]: capabilityOp[] | ['*'] } | string;
   /**
    * A client ID, used for identifying this client when publishing messages or for presence purposes. The `clientId` can be any non-empty string, except it cannot contain a `*`. This option is primarily intended to be used in situations where the library is instantiated with a key. Note that a `clientId` may also be implicit in a token used to instantiate the library. An error is raised if a `clientId` specified here conflicts with the `clientId` implicit in the token. Find out more about [identified clients](https://ably.com/docs/core-features/authentication#identified-clients).
+   *
+   * Pass `null` (or omit the field) to request an anonymous token.
    */
-  clientId?: string;
+  clientId?: string | null;
   /**
    * A cryptographically secure random string of at least 16 characters, used to ensure the {@link TokenRequest} cannot be reused.
    */

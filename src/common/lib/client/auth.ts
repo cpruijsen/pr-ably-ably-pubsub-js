@@ -962,7 +962,7 @@ class Auth {
     this.key = authOptions.key;
     this.basicKey = Utils.toBase64(authOptions.key as string);
     this.authOptions = authOptions || {};
-    if ('clientId' in authOptions) {
+    if (authOptions.clientId !== undefined) {
       this._userSetClientId(authOptions.clientId);
     }
   }
@@ -991,7 +991,7 @@ class Auth {
         this.tokenDetails = authOptions.tokenDetails;
       }
 
-      if ('clientId' in authOptions) {
+      if (authOptions.clientId !== undefined) {
         this._userSetClientId(authOptions.clientId);
       }
 
@@ -1074,7 +1074,7 @@ class Auth {
   }
 
   /* User-set: check types, '*' is disallowed, throw any errors */
-  _userSetClientId(clientId: string | undefined) {
+  _userSetClientId(clientId: string | null) {
     if (!(typeof clientId === 'string' || clientId === null)) {
       throw new ErrorInfo({
         message: 'clientId must be either a string or null',
@@ -1099,7 +1099,7 @@ class Auth {
   }
 
   /* Ably-set: no typechecking, '*' is allowed but not set on this.clientId), return errors to the caller */
-  _uncheckedSetClientId(clientId: string | undefined) {
+  _uncheckedSetClientId(clientId: string | null | undefined) {
     if (this._tokenClientIdMismatch(clientId)) {
       /* Should never happen in normal circumstances as realtime should
        * recognise mismatch and return an error */

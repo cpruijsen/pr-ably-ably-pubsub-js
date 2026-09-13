@@ -41,6 +41,55 @@ describe('uts/rest/unit/auth/client_id', function () {
   });
 
   /**
+   * RSA7a - clientId given as null is accepted and means anonymous
+   *
+   * Regression test for https://github.com/ably/ably-js/issues/2103:
+   * ClientOptions.clientId accepts null, per the documented
+   * "string or null" runtime contract.
+   */
+  it('RSA7a - clientId: null does not throw (anonymous)', function () {
+    const captured: any[] = [];
+    installMockHttp(simpleMock(captured));
+
+    const client = new Ably.Rest({ key: 'appId.keyId:keySecret', clientId: null });
+
+    expect(client.auth.clientId).to.equal(null);
+  });
+
+  /**
+   * RSA7a - clientId given as undefined is treated as omitted
+   *
+   * Regression test for https://github.com/ably/ably-js/issues/2103:
+   * an explicit undefined (e.g. `user.id ?? undefined`) must not throw,
+   * and must not clear a defaultTokenParams.clientId either.
+   */
+  it('RSA7a - clientId: undefined does not throw (treated as omitted)', function () {
+    const captured: any[] = [];
+    installMockHttp(simpleMock(captured));
+
+    const client = new Ably.Rest({
+      key: 'appId.keyId:keySecret',
+      clientId: undefined,
+      defaultTokenParams: { clientId: 'default-client-id' },
+    });
+
+    expect(client.auth.clientId).to.satisfy((v: any) => v === null || v === undefined);
+    expect(client.auth.tokenParams.clientId).to.equal('default-client-id');
+  });
+
+  /**
+   * RSA7a - invalid clientId values are still rejected
+   */
+  it('RSA7a - invalid clientId values still throw', function () {
+    const captured: any[] = [];
+    installMockHttp(simpleMock(captured));
+
+    expect(() => new Ably.Rest({ key: 'appId.keyId:keySecret', clientId: '*' })).to.throw();
+    expect(() => new Ably.Rest({ key: 'appId.keyId:keySecret', clientId: 123 as any })).to.throw();
+    expect(() => new Ably.Rest({ key: 'appId.keyId:keySecret', clientId: false as any })).to.throw();
+  });
+
+  /**
    * RSA7b - clientId from TokenDetails
    *
    * Per spec, clientId from TokenDetails passed at construction should be
